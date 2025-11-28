@@ -7,8 +7,21 @@ Avera Checkout PHP is a simple and secure checkout solution that integrates with
 ```
 # Avera Checkout PHP
 
+Simple, secure PayPal checkout with a polished UI, `.env`-based configuration, and local transaction logging.
+
+## Table of Contents
+- Overview
+- Highlights
+- Project Structure
+- Requirements
+- Setup
+- Flow
+- Test via PowerShell
+- Tips
+- License
+
 ## Overview
-A secure PayPal checkout with a polished UI, server-side endpoints for order creation and capture, and local transaction logging. Uses `.env` to keep credentials out of source.
+This app renders a modern checkout UI, creates/captures PayPal orders via PHP endpoints, and logs successful transactions to `storage/transactions.txt`. Secrets remain in `config/.env`.
 
 ## Highlights
 - Entry point: `public/index.php` injects `PAYPAL_CLIENT_ID` from `.env`.
@@ -16,8 +29,8 @@ A secure PayPal checkout with a polished UI, server-side endpoints for order cre
 - Logging: successful captures append to `storage/transactions.txt`.
 - Autoload: PSR-4 via Composer with `Avera\Utils\Response`.
 
-## Structure
-```
+## Project Structure
+```text
 composer.json
 config/
    .env               # not committed
@@ -52,22 +65,26 @@ composer install
 composer dump-autoload
 ```
 Create `config/.env` from `config/.env.example`:
-```
+```env
 PAYPAL_CLIENT_ID=your_sandbox_client_id
 PAYPAL_CLIENT_SECRET=your_sandbox_client_secret
 APP_ENV=production
 APP_DEBUG=false
 ```
 Start Apache, then open:
-`http://localhost/avera-checkout-php/public/index.php`
+```
+http://localhost/avera-checkout-php/public/index.php
+```
 
 ## Flow
 - `index.php` injects client ID into the PayPal SDK.
 - UI calls:
    - `../src/paypal/create-order.php` with `{ amount, currency }`.
    - `../src/paypal/capture-order.php?order_id=...` (POST).
-- On capture, log line format:
-`YYYY-MM-DDTHH:MM:SSZ<TAB>ORDER_ID<TAB>TRANSACTION_ID`
+- On capture, a log line is appended:
+```text
+YYYY-MM-DDTHH:MM:SSZ	ORDER_ID	TRANSACTION_ID
+```
 
 ## Test via PowerShell
 ```powershell
